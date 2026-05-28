@@ -421,8 +421,8 @@
   </div>
 
   <script>
-    const WOFF_ID     = "https://yossy-okuma.github.io/woff-app/";
-    const N8N_WEBHOOK = "https://unconcludable-unabstractedly-bianca.ngrok-free.dev/webhook/lineworks-bot";
+    const WOFF_ID     = "ここにWOFF IDを入れる";
+    const N8N_WEBHOOK = "ここにn8nのWebhook URLを入れる";
 
     woff.init({ woffId: WOFF_ID }).then(async () => {
       try {
@@ -456,11 +456,21 @@
         const res = await fetch(N8N_WEBHOOK, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: q })
+          body: JSON.stringify({
+            text: q,
+            body: {
+              source: {
+                channelId: "woff"
+              },
+              content: {
+                text: q
+              }
+            }
+          })
         });
         if (!res.ok) throw new Error('サーバーエラー: ' + res.status);
         const data = await res.text();
-　　　　 result.textContent = data;
+        result.textContent = data;
         wrap.classList.add('show');
       } catch(e) {
         result.textContent = '⚠️ エラーが発生しました\n' + e.message;
