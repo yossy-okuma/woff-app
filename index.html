@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>社内ナレッジ検索</title>
+  <script src="https://static.worksmobile.net/static/wf/woff/edge/2.0/sdk.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d0f14;
+      --surface: #13161e;
+      --surface2: #1a1e28;
+      --border: rgba(255,255,255,0.07);
+      --border-active: rgba(99,179,237,0.5);
+      --accent: #63b3ed;
+      --accent2: #76e4b0;
+      --text: #e8ecf4;
+      --text-muted: #6b7591;
+      --text-dim: #3d4460;
+      --radius: 16px;
+      --radius-sm: 10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Noto Sans JP', 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 16px 40px;
+      max-width: 600px;
+      margin: 0 auto;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(99,179,237,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(99,179,237,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 400px;
+      background: radial-gradient(ellipse, rgba(99,179,237,0.06) 0%, transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .content { position: relative; z-index: 1; }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 32px;
+      padding-top: 8px;
+    }
+
+    .header-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(99,179,237,0.2), rgba(118,228,176,0.1));
+      border: 1px solid rgba(99,179,237,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .header-text h1 {
+      font-size: 17px;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--text);
+    }
+
+    .header-text p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .user-badge {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: 6px 12px 6px 6px;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+
+    .user-badge.show { display: flex; }
+
+    .user-avatar {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 500;
+      color: #0d0f14;
+    }
+
+    .user-name {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    .input-wrapper {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 12px;
+    }
+
+    .input-wrapper:focus-within {
+      border-color: var(--border-active);
+      box-shadow: 0 0 0 3px rgba(99,179,237,0.06);
+    }
+
+    .input-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    textarea {
+      width: 100%;
+      background: transparent;
+      border: none;
+      outline: none;
+      resize: none;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 300;
+      line-height: 1.6;
+      min-height: 96px;
+      caret-color: var(--accent);
+    }
+
+    textarea::placeholder { color: var(--text-dim); }
+
+    .send-btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, rgba(99,179,237,0.15), rgba(118,228,176,0.08));
+      border: 1px solid rgba(99,179,237,0.25);
+      border-radius: var(--radius-sm);
+      color: var(--accent);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+    }
+
+    .send-btn:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(99,179,237,0.22), rgba(118,228,176,0.12));
+      border-color: rgba(99,179,237,0.45);
+      box-shadow: 0 0 20px rgba(99,179,237,0.1);
+    }
+
+    .send-btn:active:not(:disabled) { transform: scale(0.99); }
+    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    .send-btn svg {
+      width: 16px;
+      height: 16px;
+      transition: transform 0.2s;
+    }
+
+    .send-btn:not(:disabled):hover svg { transform: translateX(3px); }
+
+    .loading-bar {
+      display: none;
+      height: 2px;
+      background: var(--surface2);
+      border-radius: 99px;
+      margin-bottom: 24px;
+      overflow: hidden;
+    }
+
+    .loading-bar.show { display: block; }
+
+    .loading-bar::after {
+      content: '';
+      display: block;
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+      animation: slide 1.4s ease-in-out infinite;
+    }
+
+    @keyframes slide {
+      0% { transform: translateX(-200%); }
+      100% { transform: translateX(450%); }
+    }
+
+    .result-wrap {
+      display: none;
+      animation: fadeUp 0.3s ease;
+    }
+
+    .result-wrap.show { display: block; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .result-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--accent2);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .result-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent2);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .result-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 2px solid rgba(118,228,176,0.4);
+      border-radius: var(--radius-sm);
+      padding: 18px 16px;
+      font-size: 14px;
+      font-weight: 300;
+      line-height: 1.75;
+      color: var(--text);
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .quick-section { margin-bottom: 12px; }
+
+    .quick-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .quick-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .quick-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 300;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .quick-btn:hover {
+      border-color: rgba(99,179,237,0.2);
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    .quick-btn::before {
+      content: '↗';
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 20px 0 16px;
+    }
+
+    .divider-line {
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider-text {
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.1em;
+    }
+
+    .footer {
+      margin-top: auto;
+      padding-top: 32px;
+      text-align: center;
+      font-size: 10px;
+      color: var(--text-dim);
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+  <div class="content">
+    <div class="header">
+      <div class="header-icon">🔍</div>
+      <div class="header-text">
+        <h1>社内ナレッジ検索</h1>
+        <p>Powered by Ollama + OpenWebUI</p>
+      </div>
+    </div>
+
+    <div class="user-badge" id="user-badge">
+      <div class="user-avatar" id="user-avatar">？</div>
+      <span class="user-name" id="user-name">読み込み中...</span>
+    </div>
+
+    <div class="quick-section">
+      <div class="quick-label">よくある質問</div>
+      <div class="quick-list">
+        <button class="quick-btn" onclick="setQuestion('就業規則について教えてください')">就業規則について教えてください</button>
+        <button class="quick-btn" onclick="setQuestion('有給休暇の申請方法を教えてください')">有給休暇の申請方法を教えてください</button>
+        <button class="quick-btn" onclick="setQuestion('経費精算の手順を教えてください')">経費精算の手順を教えてください</button>
+      </div>
+    </div>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-text">または自由入力</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="input-wrapper">
+      <span class="input-label">質問内容</span>
+      <textarea id="question" placeholder="何でも聞いてください..."></textarea>
+    </div>
+
+    <button class="send-btn" id="send-btn" onclick="askQuestion()">
+      <span>回答を生成</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12"/>
+        <polyline points="12 5 19 12 12 19"/>
+      </svg>
+    </button>
+
+    <div class="loading-bar" id="loading"></div>
+
+    <div class="result-wrap" id="result-wrap">
+      <div class="result-label">回答</div>
+      <div class="result-box" id="result"></div>
+    </div>
+
+    <div class="footer">大熊建設 社内システム</div>
+  </div>
+
+  <script>
+    const WOFF_ID     = "ここにWOFF IDを入れる";
+    const N8N_WEBHOOK = "ここにn8nのWebhook URLを入れる";
+
+    woff.init({ woffId: WOFF_ID }).then(async () => {
+      try {
+        const profile = await woff.getProfile();
+        const initial = profile.displayName ? profile.displayName[0] : '?';
+        document.getElementById('user-avatar').textContent = initial;
+        document.getElementById('user-name').textContent   = profile.displayName;
+        document.getElementById('user-badge').classList.add('show');
+      } catch(e) {}
+    }).catch(() => {});
+
+    function setQuestion(text) {
+      document.getElementById('question').value = text;
+      document.getElementById('question').focus();
+    }
+
+    async function askQuestion() {
+      const q = document.getElementById('question').value.trim();
+      if (!q) return;
+
+      const btn     = document.getElementById('send-btn');
+      const loading = document.getElementById('loading');
+      const wrap    = document.getElementById('result-wrap');
+      const result  = document.getElementById('result');
+
+      btn.disabled = true;
+      loading.classList.add('show');
+      wrap.classList.remove('show');
+
+      try {
+        const res = await fetch(N8N_WEBHOOK, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: q })
+        });
+        if (!res.ok) throw new Error('サーバーエラー: ' + res.status);
+        const data = await res.json();
+        result.textContent = data.answer || data.output || data.text || JSON.stringify(data, null, 2);
+        wrap.classList.add('show');
+      } catch(e) {
+        result.textContent = '⚠️ エラーが発生しました\n' + e.message;
+        wrap.classList.add('show');
+      } finally {
+        btn.disabled = false;
+        loading.classList.remove('show');
+      }
+    }
+
+    document.getElementById('question').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        askQuestion();
+      }
+    });
+  </script>
+</body>
+</html>
