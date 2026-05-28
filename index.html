@@ -459,9 +459,8 @@
           body: JSON.stringify({ text: q })
         });
         if (!res.ok) throw new Error('サーバーエラー: ' + res.status);
-        const data = await res.json();
-        result.textContent = data.answer || data.output || data.text || JSON.stringify(data, null, 2);
-        wrap.classList.add('show');
+        const data = await res.text();
+　　　　 result.textContent = data;
       } catch(e) {
         result.textContent = '⚠️ エラーが発生しました\n' + e.message;
         wrap.classList.add('show');
