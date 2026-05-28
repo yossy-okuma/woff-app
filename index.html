@@ -461,6 +461,7 @@
         if (!res.ok) throw new Error('サーバーエラー: ' + res.status);
         const data = await res.text();
 　　　　 result.textContent = data;
+        wrap.classList.add('show');
       } catch(e) {
         result.textContent = '⚠️ エラーが発生しました\n' + e.message;
         wrap.classList.add('show');
