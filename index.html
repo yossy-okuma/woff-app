@@ -458,15 +458,13 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             text: q,
-            body: {
-              source: {
+            source: {
                 channelId: "woff",
                 userId: "woff-user"
               },
               content: {
                 text: "@bobobot " + q
               }
-            }
           })
         });
         if (!res.ok) throw new Error('サーバーエラー: ' + res.status);
