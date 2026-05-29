@@ -416,16 +416,17 @@
 
   <script>
     // ========== 設定（ここを変更してください） ==========
-    const WOFF_ID     = "https://yossy-okuma.github.io/woff-app/";
-    const N8N_WEBHOOK = "https://unconcludable-unabstractedly-bianca.ngrok-free.dev/webhook/woff-bot";
+    const WOFF_ID     = "ここにWOFF IDを入れる";
+    const N8N_WEBHOOK = "ここにn8nのWebhook URLを入れる";
 
     // 部署リスト：増やすときはここに1行追加するだけ
+    // lwChannelId = LINE WORKSの実際のトークルームID
     const DEPARTMENTS = [
-      { label: "A", channelId: "model-dept-a" },
-      { label: "B", channelId: "model-dept-b" },
-      { label: "C", channelId: "model-dept-c" },
-      { label: "D", channelId: "model-dept-d" },
-      // { label: "E部署", channelId: "dept-e" }, ← 追加するだけ
+      { label: "A部署", channelId: "dept-a", lwChannelId: "A部署のLINE WORKSチャンネルID" },
+      { label: "B部署", channelId: "dept-b", lwChannelId: "B部署のLINE WORKSチャンネルID" },
+      { label: "C部署", channelId: "dept-c", lwChannelId: "C部署のLINE WORKSチャンネルID" },
+      { label: "D部署", channelId: "dept-d", lwChannelId: "D部署のLINE WORKSチャンネルID" },
+      // { label: "E部署", channelId: "dept-e", lwChannelId: "E部署のLINE WORKSチャンネルID" }, ← 追加するだけ
     ];
     // ===================================================
 
@@ -490,6 +491,7 @@
             text: q,
             source: {
               channelId: selectedDept.channelId,
+              lwChannelId: selectedDept.lwChannelId,
               userId: "woff-user"
             },
             content: {
