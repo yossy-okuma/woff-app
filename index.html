@@ -7,21 +7,25 @@
   <script src="https://static.worksmobile.net/static/wf/woff/edge/2.0/sdk.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #0d0f14;
-      --surface: #13161e;
-      --surface2: #1a1e28;
-      --border: rgba(255,255,255,0.07);
-      --border-active: rgba(99,179,237,0.5);
-      --accent: #63b3ed;
-      --accent2: #76e4b0;
-      --text: #e8ecf4;
-      --text-muted: #6b7591;
-      --text-dim: #3d4460;
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --surface2: #e8f0fe;
+      --border: #dce3ed;
+      --border-active: #3b82f6;
+      --accent: #2563eb;
+      --accent-light: #eff6ff;
+      --accent2: #0ea5e9;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --text-dim: #94a3b8;
+      --success: #0ea5e9;
       --radius: 16px;
       --radius-sm: 10px;
+      --shadow: 0 1px 4px rgba(37,99,235,0.07), 0 4px 16px rgba(37,99,235,0.06);
+      --shadow-md: 0 2px 8px rgba(37,99,235,0.10), 0 8px 32px rgba(37,99,235,0.08);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,342 +37,322 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 20px 16px 40px;
+      padding: 0 0 40px;
       max-width: 600px;
       margin: 0 auto;
       position: relative;
-      overflow-x: hidden;
     }
 
-    body::before {
+    /* トップバー */
+    .topbar {
+      background: linear-gradient(135deg, #1d4ed8 0%, #2563eb 60%, #0ea5e9 100%);
+      padding: 20px 20px 28px;
+      position: relative;
+      overflow: hidden;
+    }
+    .topbar::before {
       content: '';
-      position: fixed;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(99,179,237,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(99,179,237,0.03) 1px, transparent 1px);
-      background-size: 40px 40px;
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.07);
       pointer-events: none;
-      z-index: 0;
     }
-
-    body::after {
+    .topbar::after {
       content: '';
-      position: fixed;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 600px;
-      height: 400px;
-      background: radial-gradient(ellipse, rgba(99,179,237,0.06) 0%, transparent 70%);
+      position: absolute;
+      bottom: -60px; left: 20px;
+      width: 140px; height: 140px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.05);
       pointer-events: none;
-      z-index: 0;
     }
-
-    .content { position: relative; z-index: 1; }
-
     .header {
       display: flex;
       align-items: center;
       gap: 12px;
-      margin-bottom: 32px;
-      padding-top: 8px;
+      position: relative;
+      z-index: 1;
     }
-
     .header-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: linear-gradient(135deg, rgba(99,179,237,0.2), rgba(118,228,176,0.1));
-      border: 1px solid rgba(99,179,237,0.2);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      flex-shrink: 0;
+      width: 44px; height: 44px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+      backdrop-filter: blur(4px);
     }
-
     .header-text h1 {
-      font-size: 17px;
-      font-weight: 500;
-      letter-spacing: 0.01em;
-      color: var(--text);
+      font-size: 18px; font-weight: 700;
+      color: #ffffff; letter-spacing: -0.01em;
     }
-
     .header-text p {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
+      font-size: 11px; color: rgba(255,255,255,0.65);
+      margin-top: 2px; letter-spacing: 0.04em; text-transform: uppercase;
     }
 
+    /* ユーザーバッジ */
     .user-badge {
       display: none;
       align-items: center;
-      gap: 8px;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      gap: 7px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
       border-radius: 99px;
-      padding: 6px 12px 6px 6px;
-      margin-bottom: 24px;
+      padding: 5px 12px 5px 5px;
+      margin-top: 14px;
       width: fit-content;
+      position: relative;
+      z-index: 1;
     }
-
     .user-badge.show { display: flex; }
-
     .user-avatar {
-      width: 26px;
-      height: 26px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      font-weight: 500;
-      color: #0d0f14;
+      width: 26px; height: 26px; border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: var(--accent);
     }
+    .user-name { font-size: 12px; color: rgba(255,255,255,0.9); }
 
-    .user-name {
-      font-size: 12px;
-      color: var(--text-muted);
-      letter-spacing: 0.02em;
-    }
-
-    .input-wrapper {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      transition: border-color 0.2s, box-shadow 0.2s;
-      margin-bottom: 12px;
-    }
-
-    .input-wrapper:focus-within {
-      border-color: var(--border-active);
-      box-shadow: 0 0 0 3px rgba(99,179,237,0.06);
-    }
-
-    .input-label {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--text-muted);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      display: block;
-    }
-
-    textarea {
-      width: 100%;
-      background: transparent;
-      border: none;
-      outline: none;
-      resize: none;
-      color: var(--text);
-      font-family: inherit;
-      font-size: 15px;
-      font-weight: 300;
-      line-height: 1.6;
-      min-height: 96px;
-      caret-color: var(--accent);
-    }
-
-    textarea::placeholder { color: var(--text-dim); }
-
-    .send-btn {
-      width: 100%;
-      padding: 15px;
-      background: linear-gradient(135deg, rgba(99,179,237,0.15), rgba(118,228,176,0.08));
-      border: 1px solid rgba(99,179,237,0.25);
-      border-radius: var(--radius-sm);
-      color: var(--accent);
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      margin-bottom: 24px;
-    }
-
-    .send-btn:hover:not(:disabled) {
-      background: linear-gradient(135deg, rgba(99,179,237,0.22), rgba(118,228,176,0.12));
-      border-color: rgba(99,179,237,0.45);
-      box-shadow: 0 0 20px rgba(99,179,237,0.1);
-    }
-
-    .send-btn:active:not(:disabled) { transform: scale(0.99); }
-    .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    .send-btn svg {
-      width: 16px;
-      height: 16px;
-      transition: transform 0.2s;
-    }
-
-    .send-btn:not(:disabled):hover svg { transform: translateX(3px); }
-
-    .loading-bar {
-      display: none;
-      height: 2px;
-      background: var(--surface2);
-      border-radius: 99px;
-      margin-bottom: 24px;
-      overflow: hidden;
-    }
-
-    .loading-bar.show { display: block; }
-
-    .loading-bar::after {
-      content: '';
-      display: block;
-      height: 100%;
-      width: 40%;
-      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
-      animation: slide 1.4s ease-in-out infinite;
-    }
-
-    @keyframes slide {
-      0% { transform: translateX(-200%); }
-      100% { transform: translateX(450%); }
-    }
-
-    .result-wrap {
-      display: none;
-      animation: fadeUp 0.3s ease;
-    }
-
-    .result-wrap.show { display: block; }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(10px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .result-label {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--accent2);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .result-label::before {
-      content: '';
-      display: inline-block;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--accent2);
-      animation: pulse 2s ease-in-out infinite;
-    }
-
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
-    }
-
-    .result-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 2px solid rgba(118,228,176,0.4);
-      border-radius: var(--radius-sm);
-      padding: 18px 16px;
-      font-size: 14px;
-      font-weight: 300;
-      line-height: 1.75;
-      color: var(--text);
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
-    .quick-section { margin-bottom: 12px; }
-
-    .quick-label {
-      font-size: 10px;
-      font-weight: 500;
-      color: var(--text-dim);
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-
-    .quick-list {
+    /* メインコンテンツ */
+    .main {
+      padding: 20px 16px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 0;
     }
 
-    .quick-btn {
+    /* カード */
+    .card {
       background: var(--surface);
-      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+      margin-bottom: 14px;
+    }
+
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .section-label::before {
+      content: '';
+      width: 3px; height: 14px;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      display: inline-block;
+    }
+
+    /* 部署選択 */
+    .dept-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 8px;
+    }
+    .dept-btn {
+      background: var(--accent-light);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 8px;
+      color: var(--text-muted);
+      font-family: inherit;
+      font-size: 13px; font-weight: 500;
+      text-align: center; cursor: pointer;
+      transition: all 0.15s;
+      position: relative; overflow: hidden;
+    }
+    .dept-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--surface2);
+      transform: translateY(-1px);
+      box-shadow: 0 2px 8px rgba(37,99,235,0.12);
+    }
+    .dept-btn.selected {
+      border-color: var(--accent);
+      color: var(--surface);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 2px 12px rgba(37,99,235,0.25);
+      transform: translateY(-1px);
+    }
+    .dept-btn.selected::after {
+      content: '✓';
+      position: absolute; top: 4px; right: 6px;
+      font-size: 9px; color: rgba(255,255,255,0.8);
+    }
+
+    /* 区切り */
+    .divider {
+      display: flex; align-items: center; gap: 10px;
+      margin: 4px 0 14px;
+    }
+    .divider-line { flex: 1; height: 1px; background: var(--border); }
+    .divider-text {
+      font-size: 10px; color: var(--text-dim);
+      letter-spacing: 0.08em; white-space: nowrap;
+    }
+
+    /* クイック質問 */
+    .quick-list { display: flex; flex-direction: column; gap: 7px; }
+    .quick-btn {
+      background: var(--accent-light);
+      border: 1.5px solid var(--border);
       border-radius: var(--radius-sm);
       padding: 11px 14px;
       color: var(--text-muted);
-      font-family: inherit;
-      font-size: 13px;
-      font-weight: 300;
-      text-align: left;
-      cursor: pointer;
+      font-family: inherit; font-size: 13px; font-weight: 400;
+      text-align: left; cursor: pointer;
       transition: all 0.15s;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      display: flex; align-items: center; gap: 10px;
     }
-
     .quick-btn:hover {
-      border-color: rgba(99,179,237,0.2);
-      color: var(--text);
+      border-color: var(--accent);
+      color: var(--accent);
       background: var(--surface2);
+      transform: translateX(3px);
     }
-
     .quick-btn::before {
-      content: '↗';
-      font-size: 11px;
-      color: var(--text-dim);
+      content: '→';
+      font-size: 12px; color: var(--accent);
+      flex-shrink: 0;
     }
 
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 20px 0 16px;
+    /* 入力 */
+    .input-wrapper {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      margin-bottom: 10px;
+      box-shadow: var(--shadow);
     }
+    .input-wrapper:focus-within {
+      border-color: var(--border-active);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1), var(--shadow);
+    }
+    .input-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      margin-bottom: 10px; display: block;
+    }
+    textarea {
+      width: 100%; background: transparent;
+      border: none; outline: none; resize: none;
+      color: var(--text); font-family: inherit;
+      font-size: 15px; font-weight: 400; line-height: 1.65;
+      min-height: 90px; caret-color: var(--accent);
+    }
+    textarea::placeholder { color: var(--text-dim); }
 
-    .divider-line {
-      flex: 1;
-      height: 1px;
+    /* 部署未選択の警告 */
+    .dept-warning {
+      display: none;
+      background: #fff7ed;
+      border: 1.5px solid #fed7aa;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      margin-bottom: 10px;
+      font-size: 12px; font-weight: 500;
+      color: #c2410c; text-align: center;
+    }
+    .dept-warning.show { display: block; }
+
+    /* 送信ボタン */
+    .send-btn {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, #1d4ed8, #2563eb, #0ea5e9);
+      border: none;
+      border-radius: var(--radius-sm);
+      color: #ffffff;
+      font-family: inherit; font-size: 14px; font-weight: 700;
+      letter-spacing: 0.04em; cursor: pointer;
+      transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 12px rgba(37,99,235,0.3);
+    }
+    .send-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(37,99,235,0.4);
+    }
+    .send-btn:active:not(:disabled) { transform: scale(0.99); }
+    .send-btn:disabled { opacity: 0.5; cursor: not-allowed; box-shadow: none; }
+    .send-btn svg { width: 16px; height: 16px; transition: transform 0.2s; }
+    .send-btn:not(:disabled):hover svg { transform: translateX(3px); }
+
+    /* ローディング */
+    .loading-bar {
+      display: none; height: 3px;
       background: var(--border);
+      border-radius: 99px; margin-bottom: 14px; overflow: hidden;
+    }
+    .loading-bar.show { display: block; }
+    .loading-bar::after {
+      content: ''; display: block; height: 100%; width: 40%;
+      background: linear-gradient(90deg, transparent, var(--accent), var(--accent2), transparent);
+      animation: slide 1.4s ease-in-out infinite;
+    }
+    @keyframes slide { 0%{transform:translateX(-200%)} 100%{transform:translateX(450%)} }
+
+    /* 回答 */
+    .result-wrap { display: none; animation: fadeUp 0.3s ease; }
+    .result-wrap.show { display: block; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    .result-header {
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;
+    }
+    .result-label {
+      font-size: 11px; font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 0.08em; text-transform: uppercase;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .result-label::before {
+      content: ''; width: 3px; height: 14px;
+      background: linear-gradient(180deg, var(--accent), var(--accent2));
+      border-radius: 99px; display: inline-block;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+    .result-dept {
+      font-size: 11px; font-weight: 500;
+      color: var(--surface);
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 99px;
+      padding: 2px 10px;
+    }
+    .result-box {
+      background: var(--surface);
+      border: 1.5px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius-sm);
+      padding: 18px 16px;
+      font-size: 14px; font-weight: 400; line-height: 1.8;
+      color: var(--text);
+      white-space: pre-wrap; word-break: break-word;
+      box-shadow: var(--shadow);
     }
 
-    .divider-text {
-      font-size: 10px;
-      color: var(--text-dim);
-      letter-spacing: 0.1em;
-    }
-
+    /* フッター */
     .footer {
-      margin-top: auto;
-      padding-top: 32px;
       text-align: center;
-      font-size: 10px;
-      color: var(--text-dim);
+      font-size: 10px; color: var(--text-dim);
       letter-spacing: 0.05em;
+      padding: 8px 0 0;
     }
   </style>
 </head>
 <body>
-  <div class="content">
+  <!-- トップバー -->
+  <div class="topbar">
     <div class="header">
       <div class="header-icon">🔍</div>
       <div class="header-text">
@@ -376,14 +360,23 @@
         <p>Powered by Ollama + OpenWebUI</p>
       </div>
     </div>
-
     <div class="user-badge" id="user-badge">
       <div class="user-avatar" id="user-avatar">？</div>
       <span class="user-name" id="user-name">読み込み中...</span>
     </div>
+  </div>
 
-    <div class="quick-section">
-      <div class="quick-label">よくある質問</div>
+  <div class="main">
+
+    <!-- 部署選択 -->
+    <div class="card">
+      <div class="section-label">部署を選択</div>
+      <div class="dept-grid" id="dept-grid"></div>
+    </div>
+
+    <!-- クイック質問 -->
+    <div class="card">
+      <div class="section-label">よくある質問</div>
       <div class="quick-list">
         <button class="quick-btn" onclick="setQuestion('就業規則について教えてください')">就業規則について教えてください</button>
         <button class="quick-btn" onclick="setQuestion('有給休暇の申請方法を教えてください')">有給休暇の申請方法を教えてください</button>
@@ -391,16 +384,13 @@
       </div>
     </div>
 
-    <div class="divider">
-      <div class="divider-line"></div>
-      <span class="divider-text">または自由入力</span>
-      <div class="divider-line"></div>
-    </div>
-
+    <!-- 入力 -->
     <div class="input-wrapper">
       <span class="input-label">質問内容</span>
       <textarea id="question" placeholder="何でも聞いてください..."></textarea>
     </div>
+
+    <div class="dept-warning" id="dept-warning">⚠️ 部署を選択してください</div>
 
     <button class="send-btn" id="send-btn" onclick="askQuestion()">
       <span>回答を生成</span>
@@ -412,8 +402,12 @@
 
     <div class="loading-bar" id="loading"></div>
 
+    <!-- 回答 -->
     <div class="result-wrap" id="result-wrap">
-      <div class="result-label">回答</div>
+      <div class="result-header">
+        <div class="result-label">回答</div>
+        <div class="result-dept" id="result-dept"></div>
+      </div>
       <div class="result-box" id="result"></div>
     </div>
 
@@ -421,9 +415,40 @@
   </div>
 
   <script>
-    const WOFF_ID     = "https://yossy-okuma.github.io/woff-app/";
-    const N8N_WEBHOOK = "https://unconcludable-unabstractedly-bianca.ngrok-free.dev/webhook/lineworks-bot";
+    // ========== 設定（ここを変更してください） ==========
+    const WOFF_ID     = "ここにWOFF IDを入れる";
+    const N8N_WEBHOOK = "ここにn8nのWebhook URLを入れる";
 
+    // 部署リスト：増やすときはここに1行追加するだけ
+    const DEPARTMENTS = [
+      { label: "A部署", channelId: "dept-a" },
+      { label: "B部署", channelId: "dept-b" },
+      { label: "C部署", channelId: "dept-c" },
+      { label: "D部署", channelId: "dept-d" },
+      // { label: "E部署", channelId: "dept-e" }, ← 追加するだけ
+    ];
+    // ===================================================
+
+    let selectedDept = null;
+
+    // 部署ボタンを動的に生成
+    const grid = document.getElementById('dept-grid');
+    DEPARTMENTS.forEach(dept => {
+      const btn = document.createElement('button');
+      btn.className = 'dept-btn';
+      btn.textContent = dept.label;
+      btn.onclick = () => selectDept(dept, btn);
+      grid.appendChild(btn);
+    });
+
+    function selectDept(dept, btn) {
+      document.querySelectorAll('.dept-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedDept = dept;
+      document.getElementById('dept-warning').classList.remove('show');
+    }
+
+    // WOFF初期化
     woff.init({ woffId: WOFF_ID }).then(async () => {
       try {
         const profile = await woff.getProfile();
@@ -443,6 +468,11 @@
       const q = document.getElementById('question').value.trim();
       if (!q) return;
 
+      if (!selectedDept) {
+        document.getElementById('dept-warning').classList.add('show');
+        return;
+      }
+
       const btn     = document.getElementById('send-btn');
       const loading = document.getElementById('loading');
       const wrap    = document.getElementById('result-wrap');
@@ -459,17 +489,18 @@
           body: JSON.stringify({
             text: q,
             source: {
-                channelId: "woff",
-                userId: "woff-user"
-              },
-              content: {
-                text: "@bobobot " + q
-              }
+              channelId: selectedDept.channelId,
+              userId: "woff-user"
+            },
+            content: {
+              text: "@bobobot " + q
+            }
           })
         });
         if (!res.ok) throw new Error('サーバーエラー: ' + res.status);
         const data = await res.text();
         result.textContent = data;
+        document.getElementById('result-dept').textContent = selectedDept.label;
         wrap.classList.add('show');
       } catch(e) {
         result.textContent = '⚠️ エラーが発生しました\n' + e.message;
