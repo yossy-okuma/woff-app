@@ -370,7 +370,7 @@
 
     <!-- 部署選択 -->
     <div class="card">
-      <div class="section-label">部署を選択</div>
+      <div class="section-label">トークルームを選択</div>
       <div class="dept-grid" id="dept-grid"></div>
     </div>
 
@@ -378,7 +378,7 @@
     <div class="card">
       <div class="section-label">よくある質問</div>
       <div class="quick-list">
-        <button class="quick-btn" onclick="setQuestion('就業規則について教えてください')">就業規則について教えてください</button>
+        <button class="quick-btn" onclick="setQuestion('有給について教えてください')">有給について教えてください</button>
         <button class="quick-btn" onclick="setQuestion('OP〇〇のタスクについて教えてください')">OP〇〇のタスクについて教えてください</button>
         <button class="quick-btn" onclick="setQuestion('OP〇〇の住所教えてください')">OP〇〇の住所教えてください</button>
       </div>
@@ -390,7 +390,7 @@
       <textarea id="question" placeholder="何でも聞いてください..."></textarea>
     </div>
 
-    <div class="dept-warning" id="dept-warning">⚠️ 部署を選択してください</div>
+    <div class="dept-warning" id="dept-warning">⚠️ トークルームを選択してください</div>
 
     <button class="send-btn" id="send-btn" onclick="askQuestion()">
       <span>回答を生成</span>
@@ -423,7 +423,7 @@
     // lwChannelId = LINE WORKSの実際のトークルームID
     const DEPARTMENTS = [
       { label: "A：就業規則", channelId: "dept-a", lwChannelId: "5abf6d66-3469-2a51-740b-751ec6388f24" },
-      { label: "B：サービスセンター", channelId: "dept-b", lwChannelId: "a2aeff8e-3f2b-aa20-3a05-cb9fee01d1e4" },
+      { label: "B：ｻｰﾋﾞｽｾﾝﾀｰ", channelId: "dept-b", lwChannelId: "a2aeff8e-3f2b-aa20-3a05-cb9fee01d1e4" },
       { label: "C：住所一覧", channelId: "dept-c", lwChannelId: "977e364d-6f47-e004-9c75-9de73d9e4b95" },
       { label: "D：経理検索用", channelId: "dept-d", lwChannelId: "669ad94b-881d-6b5e-3b14-fd1686f6def5" },
       // { label: "E部署", channelId: "dept-e", lwChannelId: "E部署のLINE WORKSチャンネルID" }, ← 追加するだけ
