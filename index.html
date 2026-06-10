@@ -500,9 +500,18 @@
           })
         });
         if (!res.ok) throw new Error('サーバーエラー: ' + res.status);
-        const data = await res.text();
-        alert('レスポンス: ' + data);  
-        result.textContent = data;
+        const raw = await res.text();
+        console.log('[woff] n8n response:', raw);
+        let displayText = raw;
+        try {
+          const json = JSON.parse(raw);
+          // n8n が返す可能性のあるフィールドを順番に探す
+          displayText = json.output ?? json.text ?? json.answer ?? json.message
+                     ?? json.result ?? json.reply ?? json.content
+                     ?? (Array.isArray(json) ? (json[0]?.output ?? json[0]?.text ?? JSON.stringify(json)) : null)
+                     ?? raw;
+        } catch (_) { /* JSON でなければそのまま使う */ }
+        result.textContent = displayText || '（回答が空でした）';
         document.getElementById('result-dept').textContent = selectedDept.label;
         wrap.classList.add('show');
       } catch(e) {
