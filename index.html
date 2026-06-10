@@ -500,8 +500,7 @@
           })
         });
         if (!res.ok) throw new Error('サーバーエラー: ' + res.status);
-        const data = await res.text();
-        alert('レスポンス: ' + data);  
+        const data = await res.text(); 
         result.textContent = data;
         document.getElementById('result-dept').textContent = selectedDept.label;
         wrap.classList.add('show');
