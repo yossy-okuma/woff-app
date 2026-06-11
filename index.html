@@ -416,17 +416,17 @@
 
   <script>
     // ========== 設定（ここを変更してください） ==========
-    const WOFF_ID     = "https://yossy-okuma.github.io/woff-app/";
-    const N8N_WEBHOOK = "https://unconcludable-unabstractedly-bianca.ngrok-free.dev/webhook/woff-bot";
+    const WOFF_ID        = "https://yossy-okuma.github.io/woff-app/";
+    const N8N_WEBHOOK    = "https://unconcludable-unabstractedly-bianca.ngrok-free.dev/webhook/woff-bot";
 
     // 部署リスト：増やすときはここに1行追加するだけ
     // lwChannelId = LINE WORKSの実際のトークルームID
     const DEPARTMENTS = [
-      { label: "A：就業規則", channelId: "dept-a", lwChannelId: "5abf6d66-3469-2a51-740b-751ec6388f24" },
+      { label: "A：就業規則",  channelId: "dept-a", lwChannelId: "5abf6d66-3469-2a51-740b-751ec6388f24" },
       { label: "B：ｻｰﾋﾞｽｾﾝﾀｰ", channelId: "dept-b", lwChannelId: "a2aeff8e-3f2b-aa20-3a05-cb9fee01d1e4" },
-      { label: "C：住所一覧", channelId: "dept-c", lwChannelId: "977e364d-6f47-e004-9c75-9de73d9e4b95" },
+      { label: "C：住所一覧",  channelId: "dept-c", lwChannelId: "977e364d-6f47-e004-9c75-9de73d9e4b95" },
       { label: "D：経理検索用", channelId: "dept-d", lwChannelId: "669ad94b-881d-6b5e-3b14-fd1686f6def5" },
-      // { label: "E部署", channelId: "dept-e", lwChannelId: "E部署のLINE WORKSチャンネルID" }, ← 追加するだけ
+      { label: "E：営業検索用", channelId: "dept-e", lwChannelId: "aa8212ec-7ba3-b418-0d77-1f7662a5d468" },
     ];
     // ===================================================
 
@@ -484,7 +484,7 @@
       wrap.classList.remove('show');
 
       try {
-        const res = await fetch(N8N_WEBHOOK, {
+        const res = await fetch(selectedDept.webhookUrl || N8N_WEBHOOK, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -505,12 +505,11 @@
         let displayText = raw;
         try {
           const json = JSON.parse(raw);
-          // n8n が返す可能性のあるフィールドを順番に探す
           displayText = json.output ?? json.text ?? json.answer ?? json.message
                      ?? json.result ?? json.reply ?? json.content
                      ?? (Array.isArray(json) ? (json[0]?.output ?? json[0]?.text ?? JSON.stringify(json)) : null)
                      ?? raw;
-        } catch (_) { /* JSON でなければそのまま使う */ }
+        } catch (_) {}
         result.textContent = displayText || '（回答が空でした）';
         document.getElementById('result-dept').textContent = selectedDept.label;
         wrap.classList.add('show');
